@@ -1,4 +1,16 @@
-exports.value = {
+const localIP = require('local-ip');
+const default_iface = 'eth0'
+const destination_iface = 'eth1';
+let local_ip = "";
+
+try {
+  local_ip = localIP(destination_iface);
+} catch (err) {
+  // exception, fallback to eth0 interface
+  local_ip = localIP(default_iface);
+}
+
+let result = {
   cluster: false,
   maxSockets: 500,
   environment: 'development',
@@ -8,7 +20,7 @@ exports.value = {
   hydra: {
     serviceName: 'sale-order-service',
     serviceDescription: 'Sale Order Service',
-    serviceIP: '172.28.128.6',
+    serviceIP: local_ip,
     servicePort: 0,
     serviceType: 'order',
     redis: {
@@ -17,4 +29,6 @@ exports.value = {
       "db": 15
     }
   }
-};
+}
+
+exports.value = result;
