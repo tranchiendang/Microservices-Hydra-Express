@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "*",
-    "body-parser": "*"
+    "hydra-express": "*"
   }
 }

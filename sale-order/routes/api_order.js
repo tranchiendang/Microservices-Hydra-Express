@@ -1,15 +1,33 @@
-const express = require("express");
+const hydraExpress = require('hydra-express');
+const express = hydraExpress.getExpress();
 const router = express.Router();
 
+const HTTP_OK = 200;
+
+/**
+* @description Create Sale Order
+* @param {function} route handler
+*/
 router.post('/create', function(req, res){
-  console.log(res.body);
-  res.json("Create sale order successfully!");
+  hydraExpress.sendResponse(HTTP_OK, res, {
+    result: {
+      message: "Create sale order successfully!"
+    }
+  });
 });
 
+/**
+* @description Get Sale Order
+* @param {function} route handler
+*/
 router.get('/:id', function(req, res){
   let id = req.params.id || 0;
-  console.log(id);
-  res.json("Get sale order with id= " + id);
+
+  hydraExpress.sendResponse(HTTP_OK, res, {
+    result: {
+      message: "Get sale order with id: " + id
+    }
+  });
 });
 
 module.exports = router;
