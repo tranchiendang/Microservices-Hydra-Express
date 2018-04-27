@@ -1,0 +1,4 @@
+vagrant halt
+vagrant package
+vagrant init <name> <path/to/package.box>/package.box
+vagrant up
