@@ -24,3 +24,36 @@ services:
       - redis
     environment:
       - REDIS_PORT_6379_TCP_ADDR=redis://redis:6379/15
+  do_service:
+    build:
+      context: ./delivery-order
+      dockerfile: Dockerfile
+    image: sapps:delivery-order-service-0.0.1
+    depends_on:
+      - redis
+    links:
+      - redis
+    environment:
+      - REDIS_PORT_6379_TCP_ADDR=redis://redis:6379/15
+  inv_service:
+    build:
+      context: ./invoice
+      dockerfile: Dockerfile
+    image: sapps:invoice-service-0.0.1
+    depends_on:
+      - redis
+    links:
+      - redis
+    environment:
+      - REDIS_PORT_6379_TCP_ADDR=redis://redis:6379/15
+  pay_service:
+    build:
+      context: ./payment
+      dockerfile: Dockerfile
+    image: sapps:payment-service-0.0.1
+    depends_on:
+      - redis
+    links:
+      - redis
+    environment:
+      - REDIS_PORT_6379_TCP_ADDR=redis://redis:6379/15
