@@ -1,0 +1,7 @@
+step 1: get docker0 interface ip
+step 2: edit docker-compose.yml and look for "hydra_router" section, then looking for "extra_hosts" section
+		change the ip from step 1 to current ip value there
+step 3: run this command:
+		docker-compose up
+
+If any change, re-run docker-compose up

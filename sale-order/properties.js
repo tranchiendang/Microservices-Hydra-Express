@@ -1,3 +1,4 @@
+/*
 const localIP = require('local-ip');
 const default_iface = 'eth0'
 const destination_iface = 'eth1';
@@ -9,6 +10,7 @@ try {
   // exception, fallback to eth0 interface
   local_ip = localIP(default_iface);
 }
+*/
 
 let result = {
   cluster: false,
@@ -20,13 +22,12 @@ let result = {
   hydra: {
     serviceName: 'sale-order-service',
     serviceDescription: 'Sale Order Service',
-    serviceIP: local_ip,
-    servicePort: 0,
+    //serviceIP: local_ip,
+    serviceIP: "",
+    servicePort: 3000,
     serviceType: 'order',
     redis: {
-      "url": "172.28.128.5",
-      "port": 6379,
-      "db": 15
+      "url": process.env.REDIS_PORT_6379_TCP_ADDR
     }
   }
 }

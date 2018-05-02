@@ -1,0 +1,26 @@
+version: "3"
+services:
+  redis:
+    image: redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+  hydra_router:
+    image: flywheelsports/hydra-router:1.6.8
+    depends_on:
+      - redis
+    ports:
+      - "5353:5353"
+    extra_hosts:
+      - "host:172.28.128.6"
+  so_service:
+    build:
+      context: ./sale-order
+      dockerfile: Dockerfile
+    image: sapps:sale-order-service-0.0.1
+    depends_on:
+      - redis
+    links:
+      - redis
+    environment:
+      - REDIS_PORT_6379_TCP_ADDR=redis://redis:6379/15
