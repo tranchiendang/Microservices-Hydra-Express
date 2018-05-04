@@ -5,6 +5,10 @@ services:
     command: redis-server --appendonly yes
     ports:
       - "6379:6379"
+  hystrix_dashboard:
+    image: kennedyoliveira/hystrix-dashboard
+    ports:
+      - "8000:7979"
   hydra_router:
     image: flywheelsports/hydra-router:1.6.8
     depends_on:
@@ -12,7 +16,7 @@ services:
     ports:
       - "5353:5353"
     extra_hosts:
-      - "host:172.28.128.6"
+      - "host:172.28.128.7"
   so_service:
     build:
       context: ./sale-order
