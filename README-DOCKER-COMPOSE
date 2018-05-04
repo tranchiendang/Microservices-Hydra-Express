@@ -5,3 +5,8 @@ step 3: run this command:
 		docker-compose up
 
 If any change, re-run docker-compose up
+
+
+HYDRA ROUTER DASHBOARD: http://localhost:5353/
+HYSTRIX DASHBOARD: http://localhost:8000/hystrix-dashboard
+ZIPKIN DASHBOARD: http://localhost:9411/zipkin/

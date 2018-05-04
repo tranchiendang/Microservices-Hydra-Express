@@ -9,6 +9,10 @@ services:
     image: kennedyoliveira/hystrix-dashboard
     ports:
       - "8000:7979"
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
   hydra_router:
     image: flywheelsports/hydra-router:1.6.8
     depends_on:
