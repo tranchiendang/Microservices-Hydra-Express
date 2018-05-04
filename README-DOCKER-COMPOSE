@@ -10,3 +10,5 @@ If any change, re-run docker-compose up
 HYDRA ROUTER DASHBOARD: http://localhost:5353/
 HYSTRIX DASHBOARD: http://localhost:8000/hystrix-dashboard
 ZIPKIN DASHBOARD: http://localhost:9411/zipkin/
+
+Rebuild independent service in docker compose: docker-compose up -d --no-deps --build so_service

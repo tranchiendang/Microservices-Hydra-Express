@@ -13,6 +13,9 @@
     "hydra-express": "*",
     "hystrixjs": "*",
     "rx": "^3.0.0",
-    "hoek": "*"
+    "hoek": "*",
+    "zipkin": "*",
+    "zipkin-instrumentation-express": "*",
+    "zipkin-transport-http": "*"
   }
 }

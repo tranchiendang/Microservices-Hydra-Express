@@ -4,6 +4,20 @@ const hydraExpress = require('hydra-express');
 const Hystrix = require("hystrixjs");
 const Hoek = require('hoek');
 
+const {Tracer, ExplicitContext, BatchRecorder, jsonEncoder: {JSON_V2}} = require('zipkin');
+const {HttpLogger} = require('zipkin-transport-http');
+const zipkinMiddleware = require('zipkin-instrumentation-express').expressMiddleware;
+
+const ctxImpl = new ExplicitContext();
+const recorder = new BatchRecorder({
+  logger: new HttpLogger({
+    endpoint: process.env.ZIPKIN_URL,
+    jsonEncoder: JSON_V2
+  })
+});
+const localServiceName = 'service-sale_order'; // name of this application
+const tracer = new Tracer({ctxImpl, recorder, localServiceName});
+
 const routes = require('./routes');
 const commandFactory = Hystrix.commandFactory;
 
@@ -33,6 +47,13 @@ function registerRoutesCallback() {
 function registerMiddlewareCallback() {
   let app = hydraExpress.getExpressApp();
 
+  app.use((req, res, next) => {
+    console.log(req.headers);
+    next();
+  });
+
+  app.use(zipkinMiddleware({tracer}));
+
   app.use('/v1/sale_order', (req, res, next) => {
     let commandPath = req.originalUrl;
     if (req.method === "GET"){
@@ -41,7 +62,7 @@ function registerMiddlewareCallback() {
         commandPath = commandPath.substring(0, indexOfSplash);
       }
     }
-    
+
     const commandBuilder = commandFactory.getOrCreate(commandPath).run(defaultRunCommand);
     commandBuilder
           .circuitBreakerErrorThresholdPercentage(50)
