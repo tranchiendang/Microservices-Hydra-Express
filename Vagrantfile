@@ -28,9 +28,12 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "ubuntu-docker"
   config.vm.network "private_network", type: "dhcp"
   config.vm.network "forwarded_port", guest: 5353, host: 5353, protocol: "tcp"
+  config.vm.network "forwarded_port", guest: 8000, host: 8000, protocol: "tcp"
+  config.vm.network "forwarded_port", guest: 9411, host: 9411, protocol: "tcp"
   config.vm.provision "shell", inline: $INSTALL_DOCKER_COMPOSE
   
   config.vm.provider "virtualbox" do |vb|
 	vb.memory = "2048"
+	vb.name = "ubuntu-docker"
   end
 end
