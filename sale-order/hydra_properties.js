@@ -1,4 +1,4 @@
-hydra: {
+const hydra = {
     'serviceName': 'sale-order-service',
     'serviceDescription': 'Sale Order Service',
     'serviceIP': '',
