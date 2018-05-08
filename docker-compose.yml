@@ -17,10 +17,10 @@ services:
     image: flywheelsports/hydra-router:1.6.8
     depends_on:
       - redis
+    links:
+    - redis:host
     ports:
       - "5353:5353"
-    extra_hosts:
-      - "host:172.28.128.7"
   so_service:
     build:
       context: ./sale-order
