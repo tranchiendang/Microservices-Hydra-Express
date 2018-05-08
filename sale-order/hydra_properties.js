@@ -4,11 +4,11 @@ const config = {
     'serviceDescription': 'Sale Order Service',
     'serviceIP': '',
     'servicePort': 3000,
-    'serviceType': 'nodejs-express-order',
+    'serviceType': 'express',
     'serviceVersion': '1.0.0',
-    redis: {
+    'redis': {
       "url": process.env.REDIS_PORT_6379_TCP_ADDR
     }
 }};
 
-exports.value = config
+exports.value = config;
