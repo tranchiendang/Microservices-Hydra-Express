@@ -10,12 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "hydra-express": "*",
-    "hystrixjs": "*",
-    "rx": "^3.0.0",
-    "hoek": "*",
-    "zipkin": "*",
-    "zipkin-instrumentation-express": "*",
-    "zipkin-transport-http": "*"
+    "express": "*",
+    "hydra": "*",
+    "hydra-integration": "*"
   }
 }
