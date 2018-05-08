@@ -8,4 +8,4 @@ const factory = new HydraServiceFactory(config);
 
 factory.init().then(factory => factory.getService(service => {
   service.use('/v1/so', routes);
-}));
+})).catch(e => console.log(e));
