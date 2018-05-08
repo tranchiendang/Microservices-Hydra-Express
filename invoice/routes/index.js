@@ -6,7 +6,7 @@ const router = express.Router();
 * @param {function} route handler
 */
 router.post('/create', function(req, res){
-  res.json("Create invoice successfully!");
+  res.send("Create invoice successfully!");
 });
 
 /**
@@ -15,7 +15,7 @@ router.post('/create', function(req, res){
 */
 router.get('/get/:id', function(req, res){
   let id = req.params.id || 0;
-  res.json("Get invoice with id= " + id);
+  res.send("Get invoice with id= " + id);
 });
 
 module.exports = router;
