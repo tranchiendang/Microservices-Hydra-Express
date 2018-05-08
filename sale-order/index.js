@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const HydraServiceFactory = require('hydra-integration').HydraServiceFactory;
 
 const routes = require('./routes');
-const config = require('./hydra_properties');
+const config = require('./hydra_properties').value;
 console.log(config);
 
 const factory = new HydraServiceFactory(config);
