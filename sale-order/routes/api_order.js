@@ -6,7 +6,7 @@ router.post('/create', function(req, res){
   res.json("Create sale order successfully!");
 });
 
-router.get('/:id', function(req, res){
+router.get('/get/:id', function(req, res){
   let id = req.params.id || 0;
   console.log(id);
   res.json("Get sale order with id= " + id);

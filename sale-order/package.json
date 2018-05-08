@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "*",
-    "body-parser": "*"
+    "body-parser": "*",
+    "hydra": "*",
+    "hydra-integration": "*"
   }
 }
