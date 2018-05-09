@@ -51,6 +51,10 @@ const router = express.Router();
 
 factory.init().then(factory => factory.getService(service => {
   router.get('/hystrix', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream;charset=UTF-8');
+    res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+
     globalStats.getHystrixStream().pipe(res);
   });
 
