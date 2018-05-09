@@ -26,17 +26,27 @@ function fallbackCall(){
     });
   };
 
-const brake = new Brakes(promiseCall, {
-    statInterval: 2500,
-    threshold: 0.5,
-    circuitDuration: 15000,
-    timeout: 250
-    }
-);
-
-brake.fallback(fallbackCall);
-
 function applyBrakes(req, res, next){
+  let commandPath = req.originalUrl;
+  if (req.method === "GET"){
+    let indexOfSplash = commandPath.lastIndexOf("/");
+    if (indexOfSplash > 0) {
+      commandPath = commandPath.substring(0, indexOfSplash);
+    }
+  }
+
+  const brake = new Brakes(promiseCall, {
+      name: commandPath,
+      group: "api"
+      statInterval: 2500,
+      threshold: 0.5,
+      circuitDuration: 15000,
+      timeout: 250
+      }
+  );
+
+  brake.fallback(fallbackCall);
+
   brake.exec(req, res, next)
       .then((result) =>{
         console.log(`result: ${result}`);
