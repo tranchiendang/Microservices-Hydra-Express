@@ -48,7 +48,12 @@ function applyBrakes(req, res, next){
 
 const globalStats = Brakes.getGlobalStats();
 
+globalStats.getRawStream().on('data', (stats) =>{
+  console.log('received global stats ->', stats);
+});
+
 const router = express.Router();
+
 factory.init().then(factory => factory.getService(service => {
   router.get('/v1/so/hystrix', (req, res) => {
     globalStats.getHystrixStream().pipe(res);
