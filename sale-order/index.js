@@ -54,7 +54,7 @@ factory.init().then(factory => factory.getService(service => {
     globalStats.getHystrixStream().pipe(res);
   });
 
-  service.use('/v1/so/hystrix', router);
+  service.use('/v1/so/monitor', router);
   service.use('/v1/so/api', applyBrakes);
   service.use('/v1/so/api', routes);
 })).catch(e => console.log(e));
