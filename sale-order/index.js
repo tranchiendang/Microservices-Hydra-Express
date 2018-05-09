@@ -37,7 +37,7 @@ function applyBrakes(req, res, next){
 
   const brake = new Brakes(promiseCall, {
       name: commandPath,
-      group: "api"
+      group: "api",
       statInterval: 2500,
       threshold: 0.5,
       circuitDuration: 15000,
