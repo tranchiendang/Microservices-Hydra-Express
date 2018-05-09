@@ -9,9 +9,6 @@ const factory = new HydraServiceFactory(config);
 const Brakes = require("brakes");
 
 function promiseCall(req, res, next){
-  console.log(req);
-  console.log(res);
-  console.log(next);
     return new Promise((resolve, reject) =>{
       if (res.statusCode == 200) {
           resolve(res);
@@ -47,10 +44,16 @@ function applyBrakes(req, res, next){
       .catch(err =>{
         console.error(`error: ${err}`);
       });
-}
+};
 
+const globalStats = Brakes.getGlobalStats();
+
+const router = express.Router();
 factory.init().then(factory => factory.getService(service => {
+  router.get('/v1/so/hystrix', (res, res) => {
+    globalStats.getHystrixStream().pipe(res);
+  });
+
   service.use('/v1/so', applyBrakes);
   service.use('/v1/so', routes);
-
 })).catch(e => console.log(e));
