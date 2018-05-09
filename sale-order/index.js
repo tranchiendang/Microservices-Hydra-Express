@@ -9,6 +9,9 @@ const factory = new HydraServiceFactory(config);
 const Brakes = require("brakes");
 
 function promiseCall(req, res, next){
+  console.log(req);
+  console.log(res);
+  console.log(next);
     return new Promise((resolve, reject) =>{
       if (res.statusCode == 200) {
           resolve(res);
@@ -34,10 +37,10 @@ const brake = new Brakes(promiseCall, {
     }
 );
 
-brake.fallback(fallbackCall)
+brake.fallback(fallbackCall);
 
 function applyBrakes(req, res, next){
-  brake.exec()
+  brake.exec(false)
       .then((result) =>{
         console.log(`result: ${result}`);
       })
