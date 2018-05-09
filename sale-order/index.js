@@ -40,7 +40,7 @@ const brake = new Brakes(promiseCall, {
 brake.fallback(fallbackCall);
 
 function applyBrakes(req, res, next){
-  brake.exec(false)
+  brake.exec(req, res, next)
       .then((result) =>{
         console.log(`result: ${result}`);
       })
