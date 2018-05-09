@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "*",
     "hydra": "*",
-    "hydra-integration": "*"
+    "hydra-integration": "*",
+    "brakes": "*"
   }
 }

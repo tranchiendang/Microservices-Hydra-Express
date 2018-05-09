@@ -30,9 +30,10 @@ services:
       - redis
     links:
       - redis
+      - zipkin
     environment:
       - REDIS_PORT_6379_TCP_ADDR=redis://redis:6379/15
-      - ZIPKIN_URL=http://172.28.128.7:9411/api/v2/spans
+      - ZIPKIN_URL=http://zipkin:9411/api/v2/spans
   do_service:
     build:
       context: ./delivery-order
@@ -42,9 +43,10 @@ services:
       - redis
     links:
       - redis
+      - zipkin
     environment:
       - REDIS_PORT_6379_TCP_ADDR=redis://redis:6379/15
-      - ZIPKIN_URL=http://172.28.128.7:9411/api/v2/spans
+      - ZIPKIN_URL=http://zipkin:9411/api/v2/spans
   inv_service:
     build:
       context: ./invoice
@@ -54,9 +56,10 @@ services:
       - redis
     links:
       - redis
+      - zipkin
     environment:
       - REDIS_PORT_6379_TCP_ADDR=redis://redis:6379/15
-      - ZIPKIN_URL=http://172.28.128.7:9411/api/v2/spans
+      - ZIPKIN_URL=http://zipkin:9411/api/v2/spans
   pay_service:
     build:
       context: ./payment
@@ -66,6 +69,7 @@ services:
       - redis
     links:
       - redis
+      - zipkin
     environment:
       - REDIS_PORT_6379_TCP_ADDR=redis://redis:6379/15
-      - ZIPKIN_URL=http://172.28.128.7:9411/api/v2/spans
+      - ZIPKIN_URL=http://zipkin:9411/api/v2/spans
