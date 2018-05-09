@@ -55,7 +55,7 @@ globalStats.getRawStream().on('data', (stats) =>{
 const router = express.Router();
 
 factory.init().then(factory => factory.getService(service => {
-  router.get('/v1/so/hystrix', (req, res) => {
+  router.get('/v1/monit/hystrix_so', (req, res) => {
     globalStats.getHystrixStream().pipe(res);
   });
 
