@@ -50,7 +50,7 @@ const globalStats = Brakes.getGlobalStats();
 
 const router = express.Router();
 factory.init().then(factory => factory.getService(service => {
-  router.get('/v1/so/hystrix', (res, res) => {
+  router.get('/v1/so/hystrix', (req, res) => {
     globalStats.getHystrixStream().pipe(res);
   });
 
