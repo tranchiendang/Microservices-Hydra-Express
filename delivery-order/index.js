@@ -59,9 +59,6 @@ function applyBrakes(req, res, next){
 const globalStats = Brakes.getGlobalStats();
 const router = express.Router();
 
-const globalStats = Brakes.getGlobalStats();
-const router = express.Router();
-
 const CLSContext = require('zipkin-context-cls');
 const {Tracer} = require('zipkin');
 const {recorder} = require('./zipkin_recorder');
