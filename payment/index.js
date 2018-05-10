@@ -64,7 +64,7 @@ const {Tracer} = require('zipkin');
 const {recorder} = require('./zipkin_recorder');
 
 const ctxImpl = new CLSContext('zipkin');
-const localServiceName = 'sale_order_service';
+const localServiceName = 'payment_service';
 const tracer = new Tracer({ctxImpl, recorder, localServiceName});
 
 const zipkinMiddleware = require('zipkin-instrumentation-express').expressMiddleware;
