@@ -16,6 +16,7 @@
     "brakes": "*",
     "zipkin": "*",
     "zipkin-instrumentation-express": "*",
-    "zipkin-transport-http": "*"
+    "zipkin-transport-http": "*",
+    "zipkin-context-cls": "*"
   }
 }
