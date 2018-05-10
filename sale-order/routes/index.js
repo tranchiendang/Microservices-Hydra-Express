@@ -6,7 +6,7 @@ const router = express.Router();
 * @param {function} route handler
 */
 router.post('/create', function(req, res){
-  res.send("Create sale order successfully!");
+  res.json({message: "Create sale order successfully!"});
 });
 
 /**

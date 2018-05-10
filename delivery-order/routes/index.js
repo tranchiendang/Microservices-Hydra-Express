@@ -6,7 +6,7 @@ const router = express.Router();
 * @param {function} route handler
 */
 router.post('/create', function(req, res){
-  res.send("Create delivery order successfully!");
+  res.json({message: "Create delivery order successfully!"});
 });
 
 /**
@@ -15,7 +15,7 @@ router.post('/create', function(req, res){
 */
 router.get('/get/:id', function(req, res){
   let id = req.params.id || 0;
-  res.send("Get delivery order with id= " + id);
+  res.json({message: "Get delivery order with id= " + id});
 });
 
 module.exports = router;

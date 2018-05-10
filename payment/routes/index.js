@@ -6,7 +6,7 @@ const router = express.Router();
 * @param {function} route handler
 */
 router.post('/create', function(req, res){
-  res.send("Create payment successfully!");
+  res.json({message: "Create payment successfully!"});
 });
 
 /**
@@ -15,7 +15,7 @@ router.post('/create', function(req, res){
 */
 router.get('/get/:id', function(req, res){
   let id = req.params.id || 0;
-  res.send("Get payment with id= " + id);
+  res.json({message: "Get payment with id= " + id});
 });
 
 module.exports = router;
