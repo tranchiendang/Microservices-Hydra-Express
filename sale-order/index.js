@@ -10,7 +10,7 @@ const Brakes = require("brakes");
 
 function promiseCall(req, res, next){
     return new Promise((resolve, reject) =>{
-      res.once('finish', () => {
+      res.on('finish', () => {
         if (res.statusCode == 200) {
             resolve(res);
         }
@@ -82,7 +82,7 @@ factory.init().then(factory => factory.getService(service => {
   });
 
   service.use('/v1/so/monitor', router);
-  
+
   service.use(zipkinMiddleware({tracer}));
   service.use('/v1/so/api', applyBrakes);
   service.use('/v1/so/api', routes);
