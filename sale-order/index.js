@@ -10,12 +10,15 @@ const Brakes = require("brakes");
 
 function promiseCall(req, res, next){
     return new Promise((resolve, reject) =>{
-      if (res.statusCode == 200) {
-          resolve(res);
-      }
-      else {
-        reject();
-      }
+      res.once('finish', () => {
+        if (res.statusCode == 200) {
+            resolve(res);
+        }
+        else {
+          reject();
+        }
+      });
+
       next();
     });
   };
@@ -59,6 +62,16 @@ function applyBrakes(req, res, next){
 const globalStats = Brakes.getGlobalStats();
 const router = express.Router();
 
+const CLSContext = require('zipkin-context-cls');
+const {Tracer} = require('zipkin');
+const {recorder} = require('./zipkin_recorder');
+
+const ctxImpl = new CLSContext('zipkin');
+const localServiceName = 'sale_order_service';
+const tracer = new Tracer({ctxImpl, recorder, localServiceName});
+
+const zipkinMiddleware = require('zipkin-instrumentation-express').expressMiddleware;
+
 factory.init().then(factory => factory.getService(service => {
   router.get('/hystrix', (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream;charset=UTF-8');
@@ -69,6 +82,8 @@ factory.init().then(factory => factory.getService(service => {
   });
 
   service.use('/v1/so/monitor', router);
+  
+  service.use(zipkinMiddleware({tracer}));
   service.use('/v1/so/api', applyBrakes);
   service.use('/v1/so/api', routes);
 })).catch(e => console.log(e));

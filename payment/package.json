@@ -13,6 +13,9 @@
     "express": "*",
     "hydra": "*",
     "hydra-integration": "*",
-    "brakes": "*"
+    "brakes": "*",
+    "zipkin": "*",
+    "zipkin-instrumentation-express": "*",
+    "zipkin-transport-http": "*"
   }
 }
