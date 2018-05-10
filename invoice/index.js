@@ -10,12 +10,15 @@ const Brakes = require("brakes");
 
 function promiseCall(req, res, next){
     return new Promise((resolve, reject) =>{
-      if (res.statusCode == 200) {
-          resolve(res);
-      }
-      else {
-        reject();
-      }
+      res.on('finish', () => {
+        if (res.statusCode == 200) {
+            resolve(res);
+        }
+        else {
+          reject();
+        }
+      });
+
       next();
     });
   };
