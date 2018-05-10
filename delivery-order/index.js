@@ -1,92 +1,89 @@
-const config = require('./properties').value;
-const version = require('./package.json').version;
-const hydraExpress = require('hydra-express');
-const Hystrix = require("hystrixjs");
-const Hoek = require('hoek');
-
-const {Tracer, ExplicitContext, BatchRecorder, jsonEncoder: {JSON_V2}} = require('zipkin');
-const {HttpLogger} = require('zipkin-transport-http');
-const zipkinMiddleware = require('zipkin-instrumentation-express').expressMiddleware;
-
-const ctxImpl = new ExplicitContext();
-const recorder = new BatchRecorder({
-  logger: new HttpLogger({
-    endpoint: process.env.ZIPKIN_URL,
-    jsonEncoder: JSON_V2
-  })
-});
-const localServiceName = 'service-delivery_order'; // name of this application
-const tracer = new Tracer({ctxImpl, recorder, localServiceName});
+const express = require("express");
+const HydraServiceFactory = require('hydra-integration').HydraServiceFactory;
 
 const routes = require('./routes');
-const commandFactory = Hystrix.commandFactory;
+const config = require('./hydra_properties').value;
 
-function defaultRunCommand(command, req, res, next) {
-    return new Promise((resolve, reject) => {
-        const handleResponseStatus = Hoek.once(function handleResponseStatus() {
-            if (config.commandStatusResolver) {
-                // hook to custom command status resolver
-                return config.commandStatusResolver(req, res)
-                .then(resolve)
-                .catch(reject);
-            }
-            resolve();
-        });
+const factory = new HydraServiceFactory(config);
 
-        res.once('finish', handleResponseStatus);
-        res.once('close', handleResponseStatus);
-        next();
+const Brakes = require("brakes");
+
+function promiseCall(req, res, next){
+    return new Promise((resolve, reject) =>{
+      res.on('finish', () => {
+        if (res.statusCode == 200) {
+            resolve(res);
+        }
+        else {
+          reject();
+        }
+      });
+
+      next();
     });
-}
+  };
 
-function registerRoutesCallback() {
-  hydraExpress.registerRoutes({'/v1/delivery_order': routes});
-  hydraExpress.registerRoutes({'/v1/hystrix_do': routes});
-}
+function fallbackCall(){
+    return new Promise((resolve, reject) =>{
+      resolve('Service not available!');
+    });
+  };
 
-function registerMiddlewareCallback() {
-  let app = hydraExpress.getExpressApp();
-
-  app.use((req, res, next) => {
-    console.log(req.headers);
-    next();
-  });
-
-  app.use(zipkinMiddleware({tracer}));
-
-  app.use('/v1/delivery_order', (req, res, next) => {
-    let commandPath = req.originalUrl;
-    if (req.method === "GET"){
-      let indexOfSplash = commandPath.lastIndexOf("/");
-      if (indexOfSplash > 0) {
-        commandPath = commandPath.substring(0, indexOfSplash);
-      }
+function applyBrakes(req, res, next){
+  let commandPath = req.originalUrl;
+  if (req.method === "GET"){
+    let indexOfSplash = commandPath.lastIndexOf("/");
+    if (indexOfSplash > 0) {
+      commandPath = commandPath.substring(0, indexOfSplash);
     }
+  }
 
-    const commandBuilder = commandFactory.getOrCreate(commandPath).run(defaultRunCommand);
-    commandBuilder
-          .circuitBreakerErrorThresholdPercentage(50)
-          .timeout(20)
-          .circuitBreakerRequestVolumeThreshold(20)
-          .circuitBreakerSleepWindowInMilliseconds(5000)
-          .statisticalWindowLength(10000)
-          .statisticalWindowNumberOfBuckets(10)
-          .build()
-          .execute(commandPath, req, res, next)
-          .catch(err => {
-              console.log(err);
-          });
+  const brake = new Brakes(promiseCall, {
+      name: commandPath,
+      group: "api",
+      statInterval: 2500,
+      threshold: 0.5,
+      circuitDuration: 15000,
+      timeout: 250
+      }
+  );
+
+  brake.fallback(fallbackCall);
+
+  brake.exec(req, res, next)
+      .then((result) =>{
+        console.log(`result: ${result}`);
+      })
+      .catch(err =>{
+        console.error(`error: ${err}`);
+      });
+};
+
+const globalStats = Brakes.getGlobalStats();
+const router = express.Router();
+
+const CLSContext = require('zipkin-context-cls');
+const {Tracer} = require('zipkin');
+const {recorder} = require('./zipkin_recorder');
+
+const ctxImpl = new CLSContext('zipkin');
+const localServiceName = 'delivery_order_service';
+const tracer = new Tracer({ctxImpl, recorder, localServiceName});
+
+const zipkinMiddleware = require('zipkin-instrumentation-express').expressMiddleware;
+
+factory.init().then(factory => factory.getService(service => {
+  router.get('/hystrix', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream;charset=UTF-8');
+    res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+
+    globalStats.getHystrixStream().pipe(res);
   });
 
-  app.use('/v1/hystrix_do', (req, res, next) => {
-    next();
-  });
-}
+  service.use('/v1/do/monitor', router);
 
-hydraExpress.init(config, version, registerRoutesCallback, registerMiddlewareCallback)
-  .then((serviceInfo) => {
-    console.log('serviceInfo', serviceInfo);
-  })
-  .catch((err) => {
-    console.log('err', err);
-  });
+  service.use(zipkinMiddleware({tracer}));
+  service.use('/v1/do/api', applyBrakes);
+  service.use('/v1/do/api', routes);
+})).catch(e => console.log(e));

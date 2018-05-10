@@ -1,56 +1,21 @@
-const hydraExpress = require('hydra-express');
-const express = hydraExpress.getExpress();
+const express = require("express");
 const router = express.Router();
-const hystrixSSEStream = require('hystrixjs').hystrixSSEStream;
-
-const HTTP_OK = 200;
 
 /**
-* @description Create Sale Order
+* @description Create sale order
 * @param {function} route handler
 */
 router.post('/create', function(req, res){
-  hydraExpress.sendResponse(HTTP_OK, res, {
-    result: {
-      message: "Create sale order successfully!"
-    }
-  });
+  res.json({message: "Create sale order successfully!"});
 });
 
 /**
-* @description Get Sale Order
+* @description Get sale order info
 * @param {function} route handler
 */
 router.get('/get/:id', function(req, res){
   let id = req.params.id || 0;
-
-  hydraExpress.sendResponse(HTTP_OK, res, {
-    result: {
-      message: "Get sale order with id: " + id
-    }
-  });
-});
-
-/**
-* @description Get hystrix data
-* @param {function} route handler
-*/
-router.get('/hystrix.stream', function(req, res) {
-    res.append('Content-Type', 'text/event-stream;charset=UTF-8');
-    res.append('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
-    res.append('Pragma', 'no-cache');
-    res.append('Connection', 'keep-alive');
-    return hystrixSSEStream.toObservable().subscribe(
-        function onNext(sseData) {
-            res.write('data: ' + sseData + '\n\n');
-        },
-        function onError(error) {
-            console.log(error);
-        },
-        function onComplete() {
-            return res.end();
-        }
-    );
+  res.json({message: "Get sale order with id= " + id});
 });
 
 module.exports = router;
